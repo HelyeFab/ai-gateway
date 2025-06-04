@@ -3,7 +3,7 @@
 This project sets up a secure local API gateway to self-hosted services (like Ollama models, TTS, etc.) using:
 
 - 🌐 [Caddy](https://caddyserver.com) – a modern reverse proxy with automatic TLS and great performance.
-- 🐍 Flask – custom gatekeeper API to validate incoming requests using secure API keys.
+- 🐍 Flask – custom gatekeeper API with reusable middleware to validate incoming requests using secure API keys.
 
 ---
 
@@ -27,23 +27,41 @@ ai-gateway/
 
 ## 🔐 How API Key Validation Works
 
-- `app.py` checks incoming requests for an `X-API-Key` header.
-- The key is matched against `/app/caddy_apikeys.json` (a mounted JSON file).
-- If the key is invalid or missing, `401 Unauthorized` is returned.
+The gateway implements a **two-layer security model**:
 
-**Protected route:**
+### 1. Caddy Layer (Front Gate)
+- Checks for presence of `X-API-Key` header
+- Returns `401 Unauthorized` immediately if no key is provided
+- Routes valid requests to Flask gatekeeper
+
+### 2. Flask Layer (Validation & Proxy)
+- Uses **reusable `@require_api_key` decorator** for consistent authentication
+- Validates API keys against `/app/caddy_apikeys.json` with intelligent caching
+- Logs all authentication attempts with user/service information
+- Proxies validated requests to backend services
+
+**Currently Protected Routes:**
 
 ```
-POST /chat/api/generate
+POST /chat/api/generate      # Ollama text generation
+POST /chat/api/chat          # Ollama chat conversations
+POST /tts/api/speak          # Text-to-Speech services
+POST /image/api/generate     # Image generation services
+POST /whisper/api/transcribe # Speech-to-Text services
+GET  /status                 # System status (authenticated)
 ```
 
-Only POST requests to this route are currently checked. This is handled in `Caddyfile`.
+**Public Routes:**
+```
+GET  /health                 # Health check (no authentication)
+```
 
 ---
 
-## 🔧 API Key Format
+## 🔧 API Key Management
 
-The flattened JSON used inside the container should look like this:
+### Key Format
+The flattened JSON used inside the container looks like this:
 
 ```json
 {
@@ -55,29 +73,131 @@ The flattened JSON used inside the container should look like this:
 }
 ```
 
-You can generate new keys with the script:
+### Enhanced Key Generation
+The `generate_apikey.py` script now supports full CRUD operations with metadata:
 
+**Interactive Mode:**
 ```bash
-python3 generate_apikey.py
+./generate_apikey.py
+# Prompts for user, service, description, and expiry
 ```
+
+**CLI Mode:**
+```bash
+# Generate key
+./generate_apikey.py generate -u john -s chat -d "Production chat access" -e 30
+
+# List active keys
+./generate_apikey.py list
+
+# List all keys (including disabled/expired)
+./generate_apikey.py list --all
+
+# Disable a key
+./generate_apikey.py disable abc123
+
+# Validate a key
+./generate_apikey.py validate e5c4b8c2-537c-47af-94a8-c8489709b49b
+```
+
+### Key Features
+- ✅ **UUID4-based keys** for cryptographic security
+- ✅ **Metadata support**: user, service, description, creation date
+- ✅ **Expiry management**: Optional automatic key expiration
+- ✅ **Key lifecycle**: Enable/disable keys without deletion
+- ✅ **Dual storage**: Full metadata + flattened runtime export
+- ✅ **Backward compatibility** with existing key formats
+- ✅ **Intelligent export**: Only active keys exported for runtime use
 
 ---
 
 ## ➕ Adding More Protected Routes
 
-1. Add new `@matcher` blocks in your `Caddyfile` for each route:
+With the new **reusable middleware architecture**, adding protected routes is now simple and consistent:
+
+### 1. Add Caddy Route Matcher
+Add a new `@matcher` block in your `Caddyfile`:
 ```caddy
-@chat {
-    path /chat/api/generate
+@newservice {
+    path /newservice/api/*
     method POST
 }
 
-handle @chat {
-    reverse_proxy localhost:8080
+handle @newservice {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
 }
 ```
 
-2. In `app.py`, duplicate the `@app.route(...)` and `is_valid_key()` check logic as needed.
+### 2. Add Flask Route with Decorator
+In `app.py`, simply add a new route with the `@require_api_key` decorator:
+```python
+@app.route("/newservice/api/endpoint", methods=["POST"])
+@require_api_key
+def new_service():
+    """Proxy requests to new service."""
+    return proxy_request("http://localhost:XXXX/endpoint")
+```
+
+### 3. Benefits of This Architecture
+- ✅ **Consistent security**: All routes use the same validation logic
+- ✅ **Easy maintenance**: Changes to auth logic apply everywhere
+- ✅ **Built-in logging**: All requests are logged with user/service info
+- ✅ **Error handling**: Standardized timeout and connection error responses
+- ✅ **Future-ready**: Easy to add rate limiting, request metrics, etc.
+
+---
+
+## 🪵 Comprehensive Audit Logging
+
+The AI Gateway includes **enterprise-grade audit logging** that tracks all security events in a separate log file:
+
+### Log Types Tracked
+- ✅ **AUTHORIZED**: Successful API key validations with user/service info
+- ✅ **UNAUTHORIZED**: Failed authentication attempts with partial key info
+- ✅ **PUBLIC**: Access to public endpoints (health checks)
+- ✅ **ERROR**: System errors and service timeouts
+
+### Log Format
+```
+2025-06-04 08:15:32 | INFO | AUTHORIZED | POST /chat/api/generate | User: john | Service: chat | IP: 192.168.1.100
+2025-06-04 08:16:15 | INFO | UNAUTHORIZED | POST /tts/api/speak | IP: 192.168.1.200 | Key: abc12345...
+2025-06-04 08:17:02 | INFO | PUBLIC | GET /health | IP: 192.168.1.50 | Status: 200
+```
+
+### Log Analysis Tool
+The included `analyze_logs.py` script provides powerful log analysis capabilities:
+
+```bash
+# Analyze all logs
+./analyze_logs.py --log-file ./logs/audit.log
+
+# Last 24 hours only
+./analyze_logs.py --log-file ./logs/audit.log --hours 24
+
+# Detect suspicious activity
+./analyze_logs.py --log-file ./logs/audit.log --suspicious
+
+# User activity report
+./analyze_logs.py --log-file ./logs/audit.log --users
+
+# Export as JSON
+./analyze_logs.py --log-file ./logs/audit.log --json --output report.json
+```
+
+### Features
+- 📊 **Usage statistics**: Request patterns, top users, endpoints
+- 🚨 **Threat detection**: Multiple failed attempts, high volume attacks
+- 👥 **User analysis**: Individual user activity patterns
+- 📈 **Trend analysis**: Time-based request patterns
+- 💾 **Log rotation**: Automatic 10MB rotation with 5 backup files
 
 ---
 

@@ -11,6 +11,9 @@ services:
     build: ./api-gatekeeper
     volumes:
       - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json:ro
+      - ./logs:/var/log/ai-gateway  # Mount audit log directory
     environment:
       API_KEYS_FILE: /app/caddy_apikeys.json
+      AUDIT_LOG_FILE: /var/log/ai-gateway/audit.log
+      LOG_LEVEL: INFO
     network_mode: "host"

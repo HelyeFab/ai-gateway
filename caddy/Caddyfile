@@ -1,13 +1,117 @@
 :80
 
-route /chat/api/* {
-  @hasKey header X-API-Key *
+# =============================================================================
+# CHAT API Routes - Ollama LLM Services
+# =============================================================================
+@chat {
+    path /chat/api/*
+    method POST
+}
 
-  handle @hasKey {
+handle @chat {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
+}
+
+# =============================================================================
+# TTS API Routes - Text-to-Speech Services
+# =============================================================================
+@tts {
+    path /tts/api/*
+    method POST
+}
+
+handle @tts {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
+}
+
+# =============================================================================
+# IMAGE API Routes - Image Generation Services
+# =============================================================================
+@image {
+    path /image/api/*
+    method POST
+}
+
+handle @image {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
+}
+
+# =============================================================================
+# WHISPER API Routes - Speech-to-Text Services
+# =============================================================================
+@whisper {
+    path /whisper/api/*
+    method POST
+}
+
+handle @whisper {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
+}
+
+# =============================================================================
+# HEALTH AND STATUS Routes - No API Key Required
+# =============================================================================
+@health {
+    path /health
+    method GET
+}
+
+handle @health {
     reverse_proxy localhost:8080
-  }
+}
 
-  handle {
-    respond "Unauthorized" 401
-  }
+@status {
+    path /status
+    method GET
+}
+
+handle @status {
+    @hasKey header X-API-Key *
+
+    handle @hasKey {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        respond "Unauthorized - API Key Required" 401
+    }
+}
+
+# =============================================================================
+# CATCH-ALL - Block unauthorized routes
+# =============================================================================
+handle {
+    respond "Not Found - Route not configured" 404
 }
