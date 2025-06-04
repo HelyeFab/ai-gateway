@@ -1,0 +1,16 @@
+services:
+  caddy:
+    image: caddy:2
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+    network_mode: "host"
+    depends_on:
+      - api-gatekeeper
+
+  api-gatekeeper:
+    build: ./api-gatekeeper
+    volumes:
+      - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json:ro
+    environment:
+      API_KEYS_FILE: /app/caddy_apikeys.json
+    network_mode: "host"

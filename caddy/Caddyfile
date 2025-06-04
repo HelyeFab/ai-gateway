@@ -1,0 +1,13 @@
+:80
+
+route /chat/api/* {
+  @hasKey header X-API-Key *
+
+  handle @hasKey {
+    reverse_proxy localhost:8080
+  }
+
+  handle {
+    respond "Unauthorized" 401
+  }
+}
