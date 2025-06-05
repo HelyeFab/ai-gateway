@@ -1,19 +1,55 @@
+
 services:
+
+  # ================================
+  # CADDY - Reverse Proxy Server
+  # ================================
   caddy:
     image: caddy:2
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-    network_mode: "host"
+    container_name: ai-gateway-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"          # HTTP
+      - "443:443"        # HTTPS (future TLS)
     depends_on:
       - api-gatekeeper
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /home/sheldon/Documents/Security/caddy_apikeys.json:/etc/caddy/caddy_apikeys.json:ro
 
+  # ================================
+  # API-GATEKEEPER - Authentication & Rate Limiting
+  # ================================
   api-gatekeeper:
     build: ./api-gatekeeper
+    container_name: ai-gateway-api-gatekeeper
+    restart: unless-stopped
+    ports:
+      - "8080:8080"   # Exposing Flask for debugging and direct testing
     volumes:
       - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json:ro
-      - ./logs:/var/log/ai-gateway  # Mount audit log directory
+      - ./logs:/var/log/ai-gateway
     environment:
       API_KEYS_FILE: /app/caddy_apikeys.json
       AUDIT_LOG_FILE: /var/log/ai-gateway/audit.log
       LOG_LEVEL: INFO
-    network_mode: "host"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ================================
+  # EDGE TTS - Text-to-Speech Service
+  # ================================
+  edge-tts:
+    build:
+      context: ./edge-tts
+      dockerfile: Dockerfile
+    container_name: edge-tts
+    ports:
+      - "8090:8090"
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/docs", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

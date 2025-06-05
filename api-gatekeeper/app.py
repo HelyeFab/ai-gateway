@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, stream_with_context
 import requests
 import os
 import json
@@ -176,42 +176,44 @@ def require_api_key(f):
 
     return decorated_function
 
-def proxy_request(target_url, timeout=30):
-    """
-    Generic request proxy function with error handling and logging.
 
-    Args:
-        target_url (str): The target URL to proxy the request to
-        timeout (int): Request timeout in seconds
-
-    Returns:
-        Flask Response object
+def proxy_request(target_url, timeout=60):
     """
+    Generic request proxy function with proper streaming and error handling.
+    """
+
     try:
-        # Prepare headers (exclude hop-by-hop headers)
+        # Filter headers (remove hop-by-hop headers)
         headers = {k: v for k, v in request.headers if k.lower() not in
                   ['host', 'connection', 'upgrade', 'proxy-authenticate', 'proxy-authorization']}
 
-        # Make the request based on method
+        # Choose method and stream the request
         if request.method == 'GET':
-            resp = requests.get(target_url, headers=headers, params=request.args, timeout=timeout)
+            resp = requests.get(target_url, headers=headers, params=request.args, timeout=timeout, stream=True)
         elif request.method == 'POST':
-            resp = requests.post(target_url, headers=headers, json=request.json, timeout=timeout)
+            resp = requests.post(target_url, headers=headers, json=request.json, timeout=timeout, stream=True)
         elif request.method == 'PUT':
-            resp = requests.put(target_url, headers=headers, json=request.json, timeout=timeout)
+            resp = requests.put(target_url, headers=headers, json=request.json, timeout=timeout, stream=True)
         elif request.method == 'DELETE':
-            resp = requests.delete(target_url, headers=headers, timeout=timeout)
+            resp = requests.delete(target_url, headers=headers, timeout=timeout, stream=True)
         else:
             return jsonify({"error": "Method not allowed"}), 405
 
         logger.info(f"Proxied {request.method} {request.path} -> {target_url} (Status: {resp.status_code})")
 
-        # Return response with proper headers
+        # Filter headers and stream response content
         excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-        headers = [(name, value) for (name, value) in resp.raw.headers.items()
-                   if name.lower() not in excluded_headers]
+        response_headers = {
+            name: value for name, value in resp.headers.items()
+            if name.lower() not in excluded_headers
+        }
 
-        return Response(resp.content, resp.status_code, headers)
+        return Response(
+            stream_with_context(resp.iter_content(chunk_size=4096)),
+            status=resp.status_code,
+            headers=response_headers
+        )
+
 
     except requests.exceptions.Timeout:
         logger.error(f"Timeout proxying request to {target_url}")
@@ -227,43 +229,146 @@ def proxy_request(target_url, timeout=30):
 # PROTECTED ROUTES - All routes below require valid API keys
 # =============================================================================
 
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🤖 CHAT/LLM GENERATION ROUTES                                           │
+# └─────────────────────────────────────────────────────────────────────────┘
+
 @app.route("/chat/api/generate", methods=["POST"])
 @require_api_key
 def chat_generate():
-    """Proxy requests to Ollama chat generation API."""
-    return proxy_request("http://localhost:11434/api/generate")
+    """
+    🤖 OLLAMA CHAT GENERATION ENDPOINT
+
+    Proxies POST requests to Ollama's text generation API for single-turn conversations.
+    Expects JSON payload with model, prompt, and generation parameters.
+
+    Target: Ollama service running on host.docker.internal:11434
+    Authentication: Required (X-API-Key header)
+    """
+    return proxy_request("http://host.docker.internal:11434/api/generate")
+
 
 @app.route("/chat/api/chat", methods=["POST"])
 @require_api_key
 def chat_conversation():
-    """Proxy requests to Ollama chat conversation API."""
+    """
+    💬 OLLAMA CHAT CONVERSATION ENDPOINT
+
+    Proxies POST requests to Ollama's chat API for multi-turn conversations.
+    Supports conversation history and context management.
+
+    Target: Ollama service running on localhost:11434
+    Authentication: Required (X-API-Key header)
+    """
     return proxy_request("http://localhost:11434/api/chat")
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🔊 TEXT-TO-SPEECH ROUTES                                                │
+# └─────────────────────────────────────────────────────────────────────────┘
 
 @app.route("/tts/api/speak", methods=["POST"])
 @require_api_key
 def tts_speak():
-    """Proxy requests to TTS service."""
-    return proxy_request("http://localhost:8090/speak")
+    """
+    🔊 TEXT-TO-SPEECH GENERATION ENDPOINT
+
+    Proxies POST requests to Edge-TTS service for speech synthesis.
+    Converts text input to audio output in various voices and languages.
+
+    Target: Edge-TTS service running in Docker container on port 8090
+    Authentication: Required (X-API-Key header)
+    Returns: Audio stream (typically MP3 format)
+    """
+    return proxy_request("http://edge-tts:8090/speak")
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🎨 IMAGE GENERATION ROUTES                                              │
+# └─────────────────────────────────────────────────────────────────────────┘
 
 @app.route("/image/api/generate", methods=["POST"])
 @require_api_key
 def image_generate():
-    """Proxy requests to image generation service."""
+    """
+    🎨 IMAGE GENERATION ENDPOINT
+
+    Proxies POST requests to image generation service (e.g., Stable Diffusion).
+    Creates images from text prompts with various styling parameters.
+
+    Target: Image generation service on localhost:8091
+    Authentication: Required (X-API-Key header)
+    Returns: Generated image data or image URL
+    """
     return proxy_request("http://localhost:8091/generate")
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🎙️ SPEECH-TO-TEXT ROUTES                                                │
+# └─────────────────────────────────────────────────────────────────────────┘
 
 @app.route("/whisper/api/transcribe", methods=["POST"])
 @require_api_key
 def whisper_transcribe():
-    """Proxy requests to Whisper transcription service."""
+    """
+    🎙️ SPEECH-TO-TEXT TRANSCRIPTION ENDPOINT
+
+    Proxies POST requests to Whisper transcription service.
+    Converts audio files to text with support for multiple languages.
+
+    Target: Whisper service running on localhost:8092
+    Authentication: Required (X-API-Key header)
+    Expects: Audio file in request (WAV, MP3, etc.)
+    Returns: Transcribed text with confidence scores
+    """
     return proxy_request("http://localhost:8092/transcribe")
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 📝 ADD NEW ROUTES HERE                                                  │
+# └─────────────────────────────────────────────────────────────────────────┘
+#
+# To add a new protected route, follow this format:
+#
+# # ┌─────────────────────────────────────────────────────────────────────────┐
+# # │ 🔧 YOUR SERVICE CATEGORY ROUTES                                         │
+# # └─────────────────────────────────────────────────────────────────────────┘
+#
+# @app.route("/your-service/api/endpoint", methods=["POST"])
+# @require_api_key
+# def your_function_name():
+#     """
+#     🔧 YOUR ENDPOINT DESCRIPTION
+#
+#     Brief description of what this endpoint does.
+#     Include any special requirements or parameters.
+#
+#     Target: Your service running on localhost:PORT
+#     Authentication: Required (X-API-Key header)
+#     Expects: Description of expected input
+#     Returns: Description of response format
+#     """
+#     return proxy_request("http://localhost:PORT/endpoint")
+#
+# For public routes (no authentication), omit the @require_api_key decorator
+# and add appropriate logging in the function body.
 
 # =============================================================================
 # HEALTH AND STATUS ENDPOINTS
 # =============================================================================
 
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🏥 SYSTEM HEALTH & STATUS ROUTES                                        │
+# └─────────────────────────────────────────────────────────────────────────┘
+
 @app.route("/health", methods=["GET"])
 def health_check():
-    """Health check endpoint (no authentication required)."""
+    """
+    🏥 PUBLIC HEALTH CHECK ENDPOINT
+
+    Basic health check endpoint for monitoring and load balancers.
+    Returns system status without requiring authentication.
+
+    Authentication: None required (public endpoint)
+    Returns: JSON with status, timestamp, and version
+    Use case: Load balancer health checks, monitoring systems
+    """
     # Log public endpoint access
     log_request_event("PUBLIC", request.path, request.method, request.remote_addr, status_code=200)
 
@@ -276,7 +381,16 @@ def health_check():
 @app.route("/status", methods=["GET"])
 @require_api_key
 def status():
-    """Status endpoint with service information (requires authentication)."""
+    """
+    📊 AUTHENTICATED STATUS ENDPOINT
+
+    Detailed status endpoint with user and service information.
+    Provides operational status and authenticated user context.
+
+    Authentication: Required (X-API-Key header)
+    Returns: JSON with status, user info, service info, timestamp, and version
+    Use case: Authenticated monitoring, user-specific status checks
+    """
     from flask import g
     return jsonify({
         "status": "operational",

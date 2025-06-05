@@ -11,13 +11,16 @@ This project sets up a secure local API gateway to self-hosted services (like Ol
 
 ```
 ai-gateway/
-├── docker-compose.yml               # Orchestrates caddy + gatekeeper containers
+├── docker-compose.yml               # Orchestrates caddy + gatekeeper + edge-tts containers
 ├── caddy/
 │   └── Caddyfile                    # Caddy config with reverse proxy rules
 ├── api-gatekeeper/
 │   ├── app.py                       # Flask app for authentication + proxy
 │   ├── requirements.txt             # Python dependencies
 │   └── Dockerfile                   # Container build for gatekeeper
+├── edge-tts/
+│   ├── speak_server.py              # Text-to-Speech server implementation
+│   └── Dockerfile                   # Container build for TTS service
 └── ~/Documents/Security/
     ├── apikeys.json                 # Master key list (detailed info)
     └── caddy_apikeys.json           # Flattened version used at runtime (mounted into container)

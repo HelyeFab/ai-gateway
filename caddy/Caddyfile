@@ -12,7 +12,7 @@ handle @chat {
     @hasKey header X-API-Key *
 
     handle @hasKey {
-        reverse_proxy localhost:8080
+        reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
     handle {
@@ -32,7 +32,7 @@ handle @tts {
     @hasKey header X-API-Key *
 
     handle @hasKey {
-        reverse_proxy localhost:8080
+        reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
     handle {
@@ -52,7 +52,7 @@ handle @image {
     @hasKey header X-API-Key *
 
     handle @hasKey {
-        reverse_proxy localhost:8080
+        reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
     handle {
@@ -72,7 +72,7 @@ handle @whisper {
     @hasKey header X-API-Key *
 
     handle @hasKey {
-        reverse_proxy localhost:8080
+        reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
     handle {
@@ -89,7 +89,7 @@ handle @whisper {
 }
 
 handle @health {
-    reverse_proxy localhost:8080
+    reverse_proxy ai-gateway-api-gatekeeper:8080
 }
 
 @status {
@@ -101,7 +101,7 @@ handle @status {
     @hasKey header X-API-Key *
 
     handle @hasKey {
-        reverse_proxy localhost:8080
+        reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
     handle {
