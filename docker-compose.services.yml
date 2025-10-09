@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  stable-diffusion:
+    image: ghcr.io/abetlen/stable-diffusion-webui-docker:latest
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    environment:
+      - COMMANDLINE_ARGS=--api --listen
+    volumes:
+      - ./data/stable-diffusion/models:/models
+      - ./data/stable-diffusion/outputs:/outputs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+  whisper:
+    image: onerahmet/openai-whisper-asr-webservice:latest
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:9000"
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+    volumes:
+      - ./data/whisper:/data/whisper
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+networks:
+  ai-gateway_default:
+    external: true

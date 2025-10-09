@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  selfmind-web:
+    image: node:18-alpine
+    container_name: ai-gateway-web
+    working_dir: /app
+    volumes:
+      - ./selfmind-web:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_ADMIN_KEY=admin-key-change-in-production
+      - ADMIN_API_KEY=admin-key-change-in-production
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - default
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ai-gateway_default
+    external: true

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # CPU-friendly Stable Diffusion alternative
+  stable-diffusion:
+    build:
+      context: ./stable-diffusion-cpu
+      dockerfile: Dockerfile
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    environment:
+      - COMMANDLINE_ARGS=--api --listen --skip-torch-cuda-test --no-half --use-cpu all
+    volumes:
+      - ./data/stable-diffusion/models:/app/models
+      - ./data/stable-diffusion/outputs:/app/outputs
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+  # Whisper ASR service
+  whisper:
+    image: onerahmet/openai-whisper-asr-webservice:latest-cpu
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:9000"
+    environment:
+      - ASR_MODEL=tiny  # Use tiny model for CPU
+      - ASR_ENGINE=openai_whisper
+    volumes:
+      - ./data/whisper:/data/whisper
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+networks:
+  ai-gateway_default:
+    external: true

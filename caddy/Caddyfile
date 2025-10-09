@@ -1,117 +1,357 @@
-:80
-
-# =============================================================================
-# CHAT API Routes - Ollama LLM Services
-# =============================================================================
-@chat {
-    path /chat/api/*
-    method POST
+# Caddyfile for AI Gateway
+# Global options to disable automatic HTTPS since we're using custom certificates
+{
+    auto_https off
 }
 
-handle @chat {
-    @hasKey header X-API-Key *
+# Supports both local development and production HTTPS
 
-    handle @hasKey {
+# Local development on port 80 - Also used by Cloudflare Tunnel
+:80 {
+    # Skip domain-based routing, handle all routes the same
+    
+    # =============================================================================
+    # NEXTAUTH Routes - Authentication for Dashboard (Must come FIRST!)
+    # =============================================================================
+    @auth {
+        path /api/auth/* /.well-known/jwks.json
+    }
+    
+    handle @auth {
+        # Add CORS headers for NextAuth.js
+        header {
+            Access-Control-Allow-Origin "https://selfmind.dev"
+            Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+            Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin"
+            Access-Control-Allow-Credentials "true"
+            Access-Control-Max-Age "86400"
+        }
+        
+        # Handle OPTIONS preflight requests
+        @options method OPTIONS
+        handle @options {
+            respond "" 204
+        }
+        
+        reverse_proxy ai-gateway-web:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto https
+            header_up X-Forwarded-Host {host}
+        }
+    }
+    
+    # Dashboard route (Next.js app)
+    @dashboard {
+        path /dashboard /dashboard/*
+    }
+    
+    handle @dashboard {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # Next.js static files
+    @nextjs {
+        path /_next/*
+    }
+    
+    handle @nextjs {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # Dashboard API Routes
+    @dashboard_api {
+        path /api/dashboard/*
+    }
+    
+    handle @dashboard_api {
+        reverse_proxy ai-gateway-api-gatekeeper:8080
+    }
+    
+    # Temporary API Key Route
+    @temp_key {
+        path /api/temp-key
+    }
+    
+    handle @temp_key {
+        reverse_proxy ai-gateway-api-gatekeeper:8080
+    }
+    
+    # Landing page (Next.js app)
+    @landing {
+        path /
+    }
+    
+    handle @landing {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # Static assets
+    @static {
+        path /css/* /js/* /images/* /assets/*
+    }
+    
+    handle @static {
+        file_server {
+            root /var/www/landing
+        }
+    }
+    
+    # Protected API routes (Chat, TTS, Image, Whisper)
+    @api {
+        path /chat/api/* /tts/api/* /image/api/* /whisper/api/*
+    }
+    
+    handle @api {
+        reverse_proxy ai-gateway-api-gatekeeper:8080
+    }
+    
+    # Health check
+    @health {
+        path /health
+    }
+    
+    handle @health {
+        reverse_proxy ai-gateway-api-gatekeeper:8080
+    }
+    
+    # Default handler
+    handle {
+        respond "Not Found" 404
+    }
+}
+
+# Alternative local port when 80 is blocked
+:8080 {
+    # Same configuration as port 80
+    @is_domain {
+        host selfmind.dev www.selfmind.dev
+    }
+    redir @is_domain https://{host}{uri} permanent
+}
+
+# Production domain with custom certificates for Cloudflare "Full" mode
+selfmind.dev:443, www.selfmind.dev:443 {
+    # Use our custom certificates for Cloudflare "Full" SSL mode
+    # This provides end-to-end encryption
+    tls /certs/origin.crt /certs/origin.key
+    
+    # Optional: IP filtering for additional security
+    # @allowed {
+    #     remote_ip 192.168.1.0/24
+    #     remote_ip 93.44.82.233
+    # }
+    # handle @allowed {
+    #     # Routes go here
+    # }
+    # handle {
+    #     respond "Access Denied" 403
+    # }
+
+    # =============================================================================
+    # CHAT API Routes - Ollama LLM Services
+    # =============================================================================
+    @chat {
+        path /chat/api/*
+        method POST
+    }
+
+    handle @chat {
+        @hasKey header X-API-Key *
+
+        handle @hasKey {
+            reverse_proxy ai-gateway-api-gatekeeper:8080
+        }
+
+        handle {
+            respond "Unauthorized - API Key Required" 401
+        }
+    }
+
+    # =============================================================================
+    # TTS API Routes - Text-to-Speech Services
+    # =============================================================================
+    @tts {
+        path /tts/api/*
+        method POST
+    }
+
+    handle @tts {
+        @hasKey header X-API-Key *
+
+        handle @hasKey {
+            reverse_proxy ai-gateway-api-gatekeeper:8080
+        }
+
+        handle {
+            respond "Unauthorized - API Key Required" 401
+        }
+    }
+
+    # =============================================================================
+    # IMAGE API Routes - Image Generation Services
+    # =============================================================================
+    @image {
+        path /image/api/*
+        method POST
+    }
+
+    handle @image {
+        @hasKey header X-API-Key *
+
+        handle @hasKey {
+            reverse_proxy ai-gateway-api-gatekeeper:8080
+        }
+
+        handle {
+            respond "Unauthorized - API Key Required" 401
+        }
+    }
+
+    # =============================================================================
+    # WHISPER API Routes - Speech-to-Text Services
+    # =============================================================================
+    @whisper {
+        path /whisper/api/*
+        method POST
+    }
+
+    handle @whisper {
+        @hasKey header X-API-Key *
+
+        handle @hasKey {
+            reverse_proxy ai-gateway-api-gatekeeper:8080
+        }
+
+        handle {
+            respond "Unauthorized - API Key Required" 401
+        }
+    }
+
+    # =============================================================================
+    # HEALTH AND STATUS Routes
+    # =============================================================================
+    @health {
+        path /health
+        method GET
+    }
+
+    handle @health {
         reverse_proxy ai-gateway-api-gatekeeper:8080
     }
 
-    handle {
-        respond "Unauthorized - API Key Required" 401
+    @status {
+        path /status
+        method GET
     }
-}
 
-# =============================================================================
-# TTS API Routes - Text-to-Speech Services
-# =============================================================================
-@tts {
-    path /tts/api/*
-    method POST
-}
+    handle @status {
+        @hasKey header X-API-Key *
 
-handle @tts {
-    @hasKey header X-API-Key *
+        handle @hasKey {
+            reverse_proxy ai-gateway-api-gatekeeper:8080
+        }
 
-    handle @hasKey {
+        handle {
+            respond "Unauthorized - API Key Required" 401
+        }
+    }
+
+    # =============================================================================
+    # LANDING PAGE (Next.js app)
+    # =============================================================================
+    @landing {
+        path /
+    }
+    
+    handle @landing {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # Next.js static files
+    @nextjs_static {
+        path /_next/*
+    }
+    
+    handle @nextjs_static {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # Dashboard route (Next.js app)
+    @dashboard {
+        path /dashboard /dashboard/*
+    }
+    
+    handle @dashboard {
+        reverse_proxy ai-gateway-web:3000
+    }
+    
+    # =============================================================================
+    # NEXTAUTH Routes - Authentication for Dashboard (Must come before dashboard API!)
+    # =============================================================================
+    @auth {
+        path /api/auth/* /.well-known/jwks.json
+    }
+    
+    handle @auth {
+        # Add CORS headers for NextAuth.js
+        header {
+            Access-Control-Allow-Origin "https://selfmind.dev"
+            Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+            Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin"
+            Access-Control-Allow-Credentials "true"
+            Access-Control-Max-Age "86400"
+        }
+        
+        # Handle OPTIONS preflight requests
+        @options method OPTIONS
+        handle @options {
+            respond "" 204
+        }
+        
+        reverse_proxy ai-gateway-web:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+        }
+    }
+    
+    # =============================================================================
+    # DASHBOARD API Routes - Admin Dashboard Backend
+    # =============================================================================
+    @dashboard_api {
+        path /api/dashboard/*
+    }
+    
+    handle @dashboard_api {
         reverse_proxy ai-gateway-api-gatekeeper:8080
     }
-
-    handle {
-        respond "Unauthorized - API Key Required" 401
+    
+    # Temporary API Key Route
+    @temp_key {
+        path /api/temp-key
     }
-}
-
-# =============================================================================
-# IMAGE API Routes - Image Generation Services
-# =============================================================================
-@image {
-    path /image/api/*
-    method POST
-}
-
-handle @image {
-    @hasKey header X-API-Key *
-
-    handle @hasKey {
+    
+    handle @temp_key {
         reverse_proxy ai-gateway-api-gatekeeper:8080
     }
-
-    handle {
-        respond "Unauthorized - API Key Required" 401
+    
+    # Authentication routes
+    @auth_api {
+        path /auth/*
     }
-}
-
-# =============================================================================
-# WHISPER API Routes - Speech-to-Text Services
-# =============================================================================
-@whisper {
-    path /whisper/api/*
-    method POST
-}
-
-handle @whisper {
-    @hasKey header X-API-Key *
-
-    handle @hasKey {
+    
+    handle @auth_api {
         reverse_proxy ai-gateway-api-gatekeeper:8080
     }
-
+    
+    # =============================================================================
+    # CATCH-ALL - Block unauthorized routes
+    # =============================================================================
     handle {
-        respond "Unauthorized - API Key Required" 401
+        respond "Not Found - Route not configured" 404
     }
-}
-
-# =============================================================================
-# HEALTH AND STATUS Routes - No API Key Required
-# =============================================================================
-@health {
-    path /health
-    method GET
-}
-
-handle @health {
-    reverse_proxy ai-gateway-api-gatekeeper:8080
-}
-
-@status {
-    path /status
-    method GET
-}
-
-handle @status {
-    @hasKey header X-API-Key *
-
-    handle @hasKey {
-        reverse_proxy ai-gateway-api-gatekeeper:8080
-    }
-
-    handle {
-        respond "Unauthorized - API Key Required" 401
-    }
-}
-
-# =============================================================================
-# CATCH-ALL - Block unauthorized routes
-# =============================================================================
-handle {
-    respond "Not Found - Route not configured" 404
 }

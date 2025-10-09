@@ -1,0 +1,131 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env*.local
+
+# API Keys and Secrets
+*apikeys.json
+*api_keys.json
+caddy_apikeys.json
+
+# Logs
+*.log
+logs/
+audit.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+.cache/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Docker
+docker-compose.override.yml
+
+# Caddy
+caddy_data/
+caddy_config/
+.caddy/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+tmp/
+temp/
+
+# Audio files (from TTS testing)
+*.mp3
+*.wav
+*.ogg
+
+# Image files (from testing)
+test*.png
+test*.jpg
+test*.jpeg
+generated_*.png
+
+# Model files (large binary files)
+*.safetensors
+*.ckpt
+*.pth
+*.bin
+*.h5
+*.onnx
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+Thumbs.db
+.DS_Store
+.directory
+
+# Monitoring
+.pm2/
+pids/
+*.pid
+
+# Security - Never commit these!
+private.key
+*.pem
+*.key
+*.cert
+*.crt
+*.csr
+firebase-service-account.json
+*service-account.json
+*firebase-adminsdk*.json
+firebase-app-credentials.txt
+
+# Backup files
+*.backup
+backup/
+backups/
+
+# Data directories
+data/stable-diffusion/outputs/
+data/stable-diffusion/models/

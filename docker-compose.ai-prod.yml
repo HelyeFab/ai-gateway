@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  # Stable Diffusion API using AUTOMATIC1111 WebUI (CPU optimized)
+  stable-diffusion:
+    image: ghcr.io/ddpn08/automatic1111-docker:main-cpu
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    environment:
+      - CLI_ARGS=--api --listen --skip-torch-cuda-test --no-half --use-cpu all --lowvram
+    volumes:
+      - ./data/stable-diffusion/models:/app/stable-diffusion-webui/models
+      - ./data/stable-diffusion/outputs:/app/stable-diffusion-webui/outputs
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+  # Whisper ASR Web Service
+  whisper:
+    image: onerahmet/openai-whisper-asr-webservice:latest-cpu
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:9000"
+    environment:
+      - ASR_MODEL=base
+      - ASR_ENGINE=openai_whisper
+    volumes:
+      - ./data/whisper:/root/.cache/whisper
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+networks:
+  ai-gateway_default:
+    external: true

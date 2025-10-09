@@ -1,0 +1,44 @@
+services:
+  # Simple Stable Diffusion API
+  stable-diffusion-simple:
+    image: python:3.10-slim
+    container_name: ai-gateway-stable-diffusion
+    working_dir: /app
+    volumes:
+      - ./stable-diffusion-simple:/app
+    command: sh -c "apt-get update && apt-get install -y curl && pip install flask flask-cors pillow && python server.py"
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Simple Whisper API  
+  whisper-simple:
+    image: python:3.10-slim
+    container_name: ai-gateway-whisper
+    working_dir: /app
+    volumes:
+      - ./whisper-simple:/app
+    command: sh -c "apt-get update && apt-get install -y curl && pip install flask flask-cors && python server.py"
+    ports:
+      - "8092:8092"
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8092/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  ai-gateway_default:
+    external: true

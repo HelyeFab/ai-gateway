@@ -1,2 +1,8 @@
 flask
+flask-cors
 requests
+pyjwt
+bcrypt
+docker
+psutil
+firebase-admin

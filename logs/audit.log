@@ -36,3 +36,174 @@
 2025-06-05 08:24:41 UTC | INFO | AUTHORIZED | POST /tts/api/speak | User: emmanuel | Service: tts | IP: 172.18.0.1
 2025-06-05 08:31:10 UTC | INFO | AUTHORIZED | POST /tts/api/speak | User: emmanuel | Service: tts | IP: 172.18.0.1
 2025-06-05 08:31:51 UTC | INFO | AUTHORIZED | POST /tts/api/speak | User: emmanuel | Service: tts | IP: 172.18.0.1
+2025-07-31 09:12:04 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 09:53:06 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 10:14:31 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 12:19:33 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 16:13:04 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 16:14:01 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-07-31 16:14:55 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.4 | Status: 200
+2025-07-31 16:31:57 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.4 | Status: 200
+2025-07-31 19:27:38 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.4 | Status: 200
+2025-07-31 19:49:53 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.4 | Status: 200
+2025-07-31 21:14:55 UTC | INFO | PUBLIC | GET /health | IP: 172.19.0.1 | Status: 200
+2025-08-01 09:10:06 UTC | INFO | UNAUTHORIZED | POST /chat/api/generate | IP: 172.19.0.1 | Key: temp_175...
+2025-08-01 09:10:17 UTC | INFO | UNAUTHORIZED | POST /tts/api/speak | IP: 172.19.0.1 | Key: temp_175...
+2025-08-01 09:10:25 UTC | INFO | UNAUTHORIZED | POST /tts/api/speak | IP: 172.19.0.1 | Key: temp_175...
+2025-08-01 10:21:07 UTC | INFO | UNAUTHORIZED | POST /chat/api/generate | IP: 172.19.0.1 | Key: temp_175...
+2025-08-01 10:27:20 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:28:47 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:29:01 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:29:01 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:29:01 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:29:01 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:31:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:31:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:33:52 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:34:32 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:34:52 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:35:45 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:37:08 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:37:08 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:37:51 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:37:51 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:06 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:06 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:06 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:06 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:24 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:38:34 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:40:35 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:35 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:35 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:35 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:40:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:33 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:33 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:33 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:33 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:48 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:48 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:48 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:43:48 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:47:45 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:47:45 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:47:55 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 10:48:28 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:28 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:28 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:28 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:41 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:41 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:41 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:48:41 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:24 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:24 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:24 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:24 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:36 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:36 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:36 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:36 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:50 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:50 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:50 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 10:53:50 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:31 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:31 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 11:30:46 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:13:58 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:13:58 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:14:21 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:14:21 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:14:32 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:14:32 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:19 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:19 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:19 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:19 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:17:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:23:04 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:23:04 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:35:38 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:35:38 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:29 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:47 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:40:47 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:47:04 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 12:47:04 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 13:00:21 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 13:02:07 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:23:34 UTC | INFO | UNAUTHORIZED | POST /chat/api/generate | IP: 172.19.0.1 | Key: temp_9ed...
+2025-08-01 20:26:35 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:26:40 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 20:31:31 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:31:31 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:31:42 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 20:32:42 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 20:36:17 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:36:17 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:45:32 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 20:45:32 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:08:05 UTC | INFO | UNAUTHORIZED | POST /chat/api/generate | IP: 172.19.0.1 | Key: temp_bc7...
+2025-08-01 21:08:22 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:08:22 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:08:25 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:19:28 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:19:28 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:20:30 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:20:30 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:20:33 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:22:54 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:22:54 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:23:08 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:23:08 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:23:22 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:28:05 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:28:12 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:30:01 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:48:49 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:48:49 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:49:42 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:49:42 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:49:44 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:50:03 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:50:03 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:50:06 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:52:03 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:52:03 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:52:41 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:52:41 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 21:52:51 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 21:52:51 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 22:12:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:12:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:12:19 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 22:16:31 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1
+2025-08-01 22:21:58 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:21:58 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:21:58 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:21:59 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:21:59 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:21:59 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:22:11 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:24:42 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:24:42 UTC | INFO | TEMP_KEY_GENERATED | POST /api/temp-key | IP: 172.19.0.1 | Status: 200
+2025-08-01 22:24:46 UTC | INFO | AUTHORIZED | POST /chat/api/generate | User: demo_user | Service: demo | IP: 172.19.0.1

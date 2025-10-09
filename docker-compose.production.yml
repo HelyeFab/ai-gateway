@@ -1,0 +1,123 @@
+version: '3'
+
+services:
+  # All existing services
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: ai-gateway-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2053:443"  # Alternative HTTPS port for Cloudflare
+      - "8443:443"  # Another alternative HTTPS port
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/data:/data
+      - ./data/caddy/config:/config
+      - ./data/caddy/logs:/var/log/caddy
+    environment:
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@selfmind.dev}
+      - DOMAIN=${DOMAIN:-selfmind.dev}
+      - NAMECHEAP_API_USER=${NAMECHEAP_USER}
+      - NAMECHEAP_API_KEY=${NAMECHEAP_API_KEY}
+    networks:
+      - default
+    depends_on:
+      - api-gatekeeper
+
+  api-gatekeeper:
+    build:
+      context: ./api-gatekeeper
+      dockerfile: Dockerfile
+    container_name: ai-gateway-api-gatekeeper
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/var/log/ai-gateway
+      - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json:ro
+      - ./api-gatekeeper/firebase-service-account.json:/app/firebase-service-account.json:ro
+    environment:
+      - API_KEYS_FILE=/app/caddy_apikeys.json
+      - AUDIT_LOG_FILE=/var/log/ai-gateway/audit.log
+      - LOG_LEVEL=INFO
+      - FLASK_ENV=production
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+
+  edge-tts:
+    build:
+      context: ./edge-tts
+      dockerfile: Dockerfile
+    container_name: edge-tts
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./data/edge-tts:/app/cache
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Production web interface
+  selfmind-web:
+    image: selfmind-web:production
+    container_name: ai-gateway-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://selfmind.dev
+    restart: unless-stopped
+    networks:
+      - default
+
+  # Stable Diffusion API wrapper
+  stable-diffusion-api:
+    build:
+      context: ./stable-diffusion-wrapper
+      dockerfile: Dockerfile
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    environment:
+      - MODEL_ID=CompVis/stable-diffusion-v1-4
+      - DEVICE=cpu
+      - LOW_MEMORY=true
+    volumes:
+      - ./data/stable-diffusion/cache:/root/.cache
+    restart: unless-stopped
+    networks:
+      - default
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  # Whisper API wrapper  
+  whisper-api:
+    build:
+      context: ./whisper-wrapper
+      dockerfile: Dockerfile
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:8092"
+    environment:
+      - WHISPER_MODEL=base
+      - DEVICE=cpu
+    volumes:
+      - ./data/whisper/cache:/root/.cache
+    restart: unless-stopped
+    networks:
+      - default
+
+networks:
+  default:
+    name: ai-gateway_default

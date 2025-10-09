@@ -1,12 +1,23 @@
 # speak_server.py
 
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 import edge_tts
 import asyncio
 import io
 
-app = FastAPI()
+app = FastAPI(title="Edge TTS Service", version="1.0.0")
+
+@app.get("/health")
+async def health():
+    """Health check endpoint"""
+    return JSONResponse({"status": "healthy", "service": "edge-tts"})
+
+@app.get("/voices")
+async def get_voices():
+    """Get available voices"""
+    voices = await edge_tts.list_voices()
+    return JSONResponse({"voices": voices})
 
 @app.post("/speak")
 async def speak(request: Request):

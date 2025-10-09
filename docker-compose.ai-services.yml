@@ -1,0 +1,38 @@
+services:
+  # Stable Diffusion API - Production Ready
+  stable-diffusion:
+    build: ./stable-diffusion-service
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./data/sd-cache:/tmp/sd-cache
+
+  # Whisper ASR Service - Production Ready
+  whisper:
+    build: ./whisper-service
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:8092"
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8092/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./data/whisper-cache:/tmp/whisper-cache
+
+networks:
+  ai-gateway_default:
+    external: true

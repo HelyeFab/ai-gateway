@@ -10,12 +10,21 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"          # HTTP
-      - "443:443"        # HTTPS (future TLS)
+      - "443:443"        # HTTPS
+      - "8443:443"       # Alternative HTTPS port
+      - "2053:443"       # Cloudflare-compatible HTTPS port
     depends_on:
       - api-gatekeeper
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
       - /home/sheldon/Documents/Security/caddy_apikeys.json:/etc/caddy/caddy_apikeys.json:ro
+      - ./landing:/var/www/landing:ro
+      - ./caddy/certs:/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - NAMECHEAP_API_USER=${NAMECHEAP_USER}
+      - NAMECHEAP_API_KEY=${NAMECHEAP_API_KEY}
 
   # ================================
   # API-GATEKEEPER - Authentication & Rate Limiting
@@ -27,12 +36,18 @@ services:
     ports:
       - "8080:8080"   # Exposing Flask for debugging and direct testing
     volumes:
-      - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json:ro
+      - /home/sheldon/Documents/Security/caddy_apikeys.json:/app/caddy_apikeys.json
       - ./logs:/var/log/ai-gateway
+      - ./data:/app/data
+      - ./landing:/app/landing:ro
+      - ./api-gatekeeper/firebase-service-account.json:/app/firebase-service-account.json:ro
     environment:
       API_KEYS_FILE: /app/caddy_apikeys.json
+      API_KEYS_METADATA_FILE: /app/data/apikeys_metadata.json
       AUDIT_LOG_FILE: /var/log/ai-gateway/audit.log
       LOG_LEVEL: INFO
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-change-this-to-a-secure-api-key}
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -48,8 +63,44 @@ services:
       - "8090:8090"
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8090/docs", "||", "exit", "1"]
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # ================================
+  # SELFMIND WEB - Landing Page & Dashboard
+  # ================================
+  selfmind-web:
+    build: ./selfmind-web
+    container_name: ai-gateway-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
+      - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
+      - NEXT_PUBLIC_FIREBASE_APP_ID=${FIREBASE_APP_ID}
+      - NODE_ENV=production
+    depends_on:
+      - api-gatekeeper
+    
+  # ================================
+  # STABLE DIFFUSION - Text-to-Image Service
+  # ================================
+  # Note: AUTOMATIC1111 should be run separately as it requires special setup
+  # Instructions:
+  # 1. cd ../stable-diffusion-webui-docker
+  # 2. docker compose --profile auto-cpu up --build
+  # 
+  # The service will be available at localhost:7860
+  # API endpoints are automatically enabled with the --api flag
+
+volumes:
+  caddy_data:
+  caddy_config:

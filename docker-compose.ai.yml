@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Image generation service
+  stable-diffusion:
+    build:
+      context: ./image-generator
+      dockerfile: Dockerfile
+    container_name: ai-gateway-stable-diffusion
+    ports:
+      - "7860:7860"
+    environment:
+      - MODEL_ID=runwayml/stable-diffusion-v1-5  # Smaller model for CPU
+    volumes:
+      - ./data/stable-diffusion:/app/outputs
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+  # Speech-to-text service
+  whisper:
+    build:
+      context: ./whisper-service
+      dockerfile: Dockerfile
+    container_name: ai-gateway-whisper
+    ports:
+      - "8092:8092"
+    environment:
+      - WHISPER_MODEL=tiny  # tiny, base, small, medium, large
+    volumes:
+      - ./data/whisper:/app/models
+    restart: unless-stopped
+    networks:
+      - ai-gateway_default
+
+networks:
+  ai-gateway_default:
+    external: true

@@ -1,9 +1,18 @@
 # 🛡️ AI Gateway with Caddy + Flask Gatekeeper
 
-This project sets up a secure local API gateway to self-hosted services (like Ollama models, TTS, etc.) using:
+A secure, production-ready API gateway for self-hosted AI services with multiple access methods:
 
-- 🌐 [Caddy](https://caddyserver.com) – a modern reverse proxy with automatic TLS and great performance.
-- 🐍 Flask – custom gatekeeper API with reusable middleware to validate incoming requests using secure API keys.
+- 🌐 **Public Access**: Via Cloudflare CDN at https://selfmind.dev
+- 🔒 **Private Access**: Via Tailscale VPN at http://100.111.118.91:8080
+- 🏠 **Local Access**: Direct at http://localhost:8080
+
+## 🚀 Current Status
+
+- ✅ **Cloudflare Integration**: Public HTTPS access without port forwarding
+- ✅ **Tailscale VPN**: Secure private access for administration
+- ✅ **API Services**: Ollama (LLM), Edge-TTS, Stable Diffusion, Whisper
+- ✅ **Monitoring**: Netdata system monitoring via Tailscale
+- ✅ **Security**: Multi-layer authentication with API keys
 
 ---
 
@@ -21,6 +30,12 @@ ai-gateway/
 ├── edge-tts/
 │   ├── speak_server.py              # Text-to-Speech server implementation
 │   └── Dockerfile                   # Container build for TTS service
+├── data/
+│   └── stable-diffusion/
+│       ├── models/
+│       │   └── Stable-diffusion/
+│       │       └── v1-5-pruned.safetensors  # Stable Diffusion model file
+│       └── outputs/                 # Generated images output directory
 └── ~/Documents/Security/
     ├── apikeys.json                 # Master key list (detailed info)
     └── caddy_apikeys.json           # Flattened version used at runtime (mounted into container)
@@ -204,18 +219,79 @@ The included `analyze_logs.py` script provides powerful log analysis capabilitie
 
 ---
 
-## 🚀 Moving to Production
+## 🌐 Access Methods
 
-To prepare for deployment:
+### Public Access (Cloudflare)
+```bash
+# Health check
+curl https://selfmind.dev/health
 
-1. **Use a production WSGI server**: Swap Flask’s dev server for `gunicorn` or `uWSGI`.
-2. **Use HTTPS**: Allow Caddy to handle TLS certs or proxy through another secure service.
-3. **Add logging**: Enable audit logging for accepted/denied requests.
-4. **Rotate Keys**: Use `apikeys.json` + regenerate `caddy_apikeys.json` periodically.
-5. **Authentication Middleware**: Optional: use OAuth or JWTs downstream of Caddy.
-6. **Firewall**: Ensure only localhost/internal network can reach Caddy or Flask directly.
+# API usage
+curl -X POST https://selfmind.dev/chat/api/generate \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"llama3", "prompt":"Hello"}'
+```
+
+### Private Access (Tailscale)
+```bash
+# Connect to VPN
+sudo tailscale up
+
+# Access services
+curl http://100.111.118.91:8080/health
+
+# Monitor system
+http://100.111.118.91:19999  # Netdata dashboard
+```
+
+## 📊 Monitoring & Maintenance
+
+### System Monitoring
+- **Netdata**: Real-time metrics at http://100.111.118.91:19999
+- **Docker Stats**: `docker compose ps`
+- **Audit Logs**: `./analyze_logs.py --log-file ./logs/audit.log`
+
+### Regular Tasks
+1. **Update services**: `docker compose pull && docker compose up -d`
+2. **Rotate API keys**: Monthly using `./generate_apikey.py`
+3. **Check logs**: Weekly audit log review
+4. **Update VPN**: `sudo apt update && sudo apt upgrade tailscale`
 
 ---
+
+## 📚 Documentation
+
+- [Network Setup Guide](./NETWORK_SETUP.md) - Complete network architecture
+- [HTTPS Setup](./HTTPS_SETUP.md) - Cloudflare and SSL configuration
+- [VPN Setup](./VPN_SETUP.md) - Tailscale configuration guide
+- [API Documentation](./chat-api.md) - Chat API endpoints
+- [Image API](./image-api.md) - Stable Diffusion endpoints
+- [TTS API](./edge-tts-api.md) - Text-to-Speech endpoints
+- [Monitoring](./MONITORING.md) - System monitoring setup
+
+## 🛠️ Quick Commands
+
+```bash
+# Service Management
+docker compose up -d          # Start all services
+docker compose logs -f        # View logs
+docker compose restart        # Restart services
+
+# API Key Management
+./generate_apikey.py          # Interactive key generation
+./generate_apikey.py list     # List active keys
+./generate_apikey.py disable KEY_ID  # Disable a key
+
+# Log Analysis
+./analyze_logs.py --log-file ./logs/audit.log --hours 24
+./analyze_logs.py --log-file ./logs/audit.log --suspicious
+
+# Health Checks
+curl http://localhost:8080/health            # Local
+curl http://100.111.118.91:8080/health      # Tailscale
+curl https://selfmind.dev/health            # Cloudflare
+```
 
 ## 👥 Contributors
 

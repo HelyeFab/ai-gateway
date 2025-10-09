@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Theme - Enhanced Contrast */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 262 83% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 91% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 330 81% 45%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 240 4.8% 92%;
+    --muted-foreground: 240 5% 25%;
+    --destructive: 0 84.2% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 85%;
+    --input: 240 5.9% 85%;
+    --ring: 262 83% 45%;
+    --sparkle: 45 93% 58%;
+    --glow: 180 100% 50%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 330 81% 60%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 58%;
+    --sparkle: 45 93% 68%;
+    --glow: 180 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-sparkle {
+    background-color: hsl(var(--sparkle));
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(330 81% 60%) 100%);
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(262 83% 58%) 100%);
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(330 81% 60%) 0%, hsl(45 93% 58%) 100%);
+  }
+  
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(45 100% 50%) 50%, hsl(340 100% 65%) 100%);
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+  }
+  
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(217 91% 60%) 50%, hsl(330 81% 60%) 100%);
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+  }
+  
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  }
+  
+  .bg-gradient-secondary {
+    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--primary)) 100%);
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-primary {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+  
+  .glow {
+    box-shadow: 0 0 30px hsl(var(--glow) / 0.3);
+  }
+  
+  .glow-primary {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.4);
+  }
+  
+  .parallax-container {
+    perspective: 1000px;
+  }
+  
+  .parallax-layer {
+    transform-style: preserve-3d;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
