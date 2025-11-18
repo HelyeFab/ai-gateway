@@ -69,6 +69,9 @@ export function Header() {
               <Link href="/docs" className={`transition-colors ${themeClasses.link}`}>
                 Docs
               </Link>
+              <Link href="/playground" className={`transition-colors ${themeClasses.link}`}>
+                Playground
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4">
